@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 210 79% 58%;
+    --primary-foreground: 0 0% 100%;
+    --success: 150 50% 55%;
+    --warning: 39 100% 50%;
+    --error: 4 66% 57%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --border: 214 32% 91%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+}
+
+@layer components {
+  /* Custom animations */
+  .animate-skeleton {
+    animation: skeleton 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-primary/90 focus:ring-primary;
+  }
+
+  .btn-secondary {
+    @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
+  }
+
+  .btn-danger {
+    @apply btn bg-error text-white hover:bg-error/90 focus:ring-error;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-xl border border-gray-200 bg-white p-6 shadow-soft;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Safe area padding for mobile */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

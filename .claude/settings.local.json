@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(cat .claude/settings.local.json)",
+      "Bash(ls -la \"$HOME/.claude/\")",
+      "Bash(cat ~/.claude/plugins/marketplaces/claude-code-plugins/plugins/security-guidance/hooks/hooks.json)",
+      "Bash(cat ~/.claude/plugins/marketplaces/claude-code-plugins/plugins/security-guidance/hooks/security_reminder_hook.py)",
+      "Read(//c/tmp/**)",
+      "Bash(mkdir:*)",
+      "Bash(tree:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
