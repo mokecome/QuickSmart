@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         user: {
           id: authData.user.id,
           email: authData.user.email,
-          name: profile?.name || authData.user.user_metadata?.name || authData.user.email?.split('@')[0],
+          name: profile?.display_name || authData.user.user_metadata?.name || authData.user.email?.split('@')[0],
         },
         session: authData.session,
       },
