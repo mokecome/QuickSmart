@@ -21,16 +21,16 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.45.4",
     "@tanstack/react-query": "^5.62.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^11.15.0",
     "next": "^14.2.23",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "zustand": "^5.0.2",
     "recharts": "^2.15.0",
-    "date-fns": "^4.1.0",
+    "tailwind-merge": "^2.6.0",
     "zod": "^3.24.1",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.6.0"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
@@ -43,6 +43,7 @@
     "@types/react-dom": "^18.3.5",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
+    "@vitejs/plugin-react": "^5.0.4",
     "@vitest/ui": "^2.1.8",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
