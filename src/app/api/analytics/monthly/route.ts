@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
 
     // Daily totals (for charts)
     const dailyTotals: Record<string, number> = {}
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { date: string; amount: number }) => {
       const dateKey = new Date(expense.date).toISOString().split('T')[0]
       dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + Number(expense.amount)
     })
