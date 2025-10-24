@@ -10,6 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        border: 'hsl(var(--border))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        muted: 'hsl(var(--muted))',
         primary: {
           DEFAULT: '#4A90E2',
           50: '#EBF4FC',
