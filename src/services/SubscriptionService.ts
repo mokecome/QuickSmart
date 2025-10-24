@@ -262,11 +262,11 @@ export class SubscriptionService {
   async getSummary(userId: string) {
     const subscriptions = await this.listSubscriptions(userId, { includeAll: false })
 
-    const activeSubscriptions = subscriptions.filter((sub) => sub.status === 'ACTIVE')
-    const pausedSubscriptions = subscriptions.filter((sub) => sub.status === 'PAUSED')
+    const activeSubscriptions = subscriptions.filter((sub: { status: string }) => sub.status === 'ACTIVE')
+    const pausedSubscriptions = subscriptions.filter((sub: { status: string }) => sub.status === 'PAUSED')
 
     // Calculate monthly total
-    const monthlyTotal = activeSubscriptions.reduce((total, sub) => {
+    const monthlyTotal = activeSubscriptions.reduce((total: number, sub: { amount: number; billing_cycle: string }) => {
       const amount = parseFloat(sub.amount.toString())
       switch (sub.billing_cycle) {
         case 'WEEKLY':

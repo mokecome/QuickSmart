@@ -116,9 +116,11 @@ export interface Database {
           billing_cycle: string
           next_billing_date: string
           notification_days: number[]
+          reminder_days: number[]
           auto_record: boolean
           status: string
           reminder_sent_for: Json
+          notes: string | null
           created_at: string
           updated_at: string
           deleted_at: string | null
@@ -132,9 +134,11 @@ export interface Database {
           billing_cycle: string
           next_billing_date: string
           notification_days?: number[]
+          reminder_days?: number[]
           auto_record?: boolean
           status?: string
           reminder_sent_for?: Json
+          notes?: string | null
           created_at?: string
           updated_at?: string
           deleted_at?: string | null
@@ -148,9 +152,11 @@ export interface Database {
           billing_cycle?: string
           next_billing_date?: string
           notification_days?: number[]
+          reminder_days?: number[]
           auto_record?: boolean
           status?: string
           reminder_sent_for?: Json
+          notes?: string | null
           created_at?: string
           updated_at?: string
           deleted_at?: string | null
@@ -161,33 +167,39 @@ export interface Database {
           id: string
           user_id: string
           original_input: string
+          original_category: string
           corrected_category: string
           corrected_amount: number | null
           corrected_description: string | null
           ai_suggested_category: string | null
           ai_confidence: number | null
+          expense_id: string | null
           created_at: string
         }
         Insert: {
           id?: string
           user_id: string
           original_input: string
+          original_category?: string
           corrected_category: string
           corrected_amount?: number | null
           corrected_description?: string | null
           ai_suggested_category?: string | null
           ai_confidence?: number | null
+          expense_id?: string | null
           created_at?: string
         }
         Update: {
           id?: string
           user_id?: string
           original_input?: string
+          original_category?: string
           corrected_category?: string
           corrected_amount?: number | null
           corrected_description?: string | null
           ai_suggested_category?: string | null
           ai_confidence?: number | null
+          expense_id?: string | null
           created_at?: string
         }
       }
@@ -203,6 +215,10 @@ export interface Database {
           status: string
           sent_at: string | null
           created_at: string
+          related_id: string | null
+          scheduled_for: string | null
+          read: boolean
+          read_at: string | null
         }
         Insert: {
           id?: string
@@ -211,10 +227,14 @@ export interface Database {
           title: string
           message: string
           data?: Json | null
-          channel: string
+          channel?: string
           status?: string
           sent_at?: string | null
           created_at?: string
+          related_id?: string | null
+          scheduled_for?: string | null
+          read?: boolean
+          read_at?: string | null
         }
         Update: {
           id?: string
@@ -227,38 +247,39 @@ export interface Database {
           status?: string
           sent_at?: string | null
           created_at?: string
+          related_id?: string | null
+          scheduled_for?: string | null
+          read?: boolean
+          read_at?: string | null
         }
       }
       analytics_cache: {
         Row: {
           id: string
           user_id: string
-          month: string
-          total_expenses: number
-          total_income: number
-          category_breakdown: Json | null
-          insights: Json | null
-          computed_at: string
+          cache_key: string
+          cache_type: string
+          data: Json
+          expires_at: string
+          created_at: string
         }
         Insert: {
           id?: string
           user_id: string
-          month: string
-          total_expenses?: number
-          total_income?: number
-          category_breakdown?: Json | null
-          insights?: Json | null
-          computed_at?: string
+          cache_key: string
+          cache_type: string
+          data: Json
+          expires_at: string
+          created_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          month?: string
-          total_expenses?: number
-          total_income?: number
-          category_breakdown?: Json | null
-          insights?: Json | null
-          computed_at?: string
+          cache_key?: string
+          cache_type?: string
+          data?: Json
+          expires_at?: string
+          created_at?: string
         }
       }
     }

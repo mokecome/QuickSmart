@@ -44,16 +44,16 @@ export async function GET(request: NextRequest) {
 
     // Calculate statistics
     const totalExpenses = expenses
-      .filter((e) => e.category !== 'INCOME')
-      .reduce((sum, e) => sum + Number(e.amount), 0)
+      .filter((e: { category: string }) => e.category !== 'INCOME')
+      .reduce((sum: number, e: { amount: number }) => sum + Number(e.amount), 0)
 
     const totalIncome = expenses
-      .filter((e) => e.category === 'INCOME')
-      .reduce((sum, e) => sum + Number(e.amount), 0)
+      .filter((e: { category: string }) => e.category === 'INCOME')
+      .reduce((sum: number, e: { amount: number }) => sum + Number(e.amount), 0)
 
     // Category breakdown
     const categoryBreakdown: Record<string, number> = {}
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { category: string; amount: number }) => {
       if (expense.category !== 'INCOME') {
         categoryBreakdown[expense.category] =
           (categoryBreakdown[expense.category] || 0) + Number(expense.amount)
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5)
 
-    const transactionCount = expenses.filter((e) => e.category !== 'INCOME').length
+    const transactionCount = expenses.filter((e: { category: string }) => e.category !== 'INCOME').length
     const averageTransaction =
       transactionCount > 0 ? totalExpenses / transactionCount : 0
 

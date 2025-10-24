@@ -46,19 +46,19 @@ export async function GET(request: NextRequest) {
 
     // Calculate monthly total
     const monthlyTotal = data
-      .filter((sub) => sub.status === 'ACTIVE' && sub.billing_cycle === 'MONTHLY')
-      .reduce((sum, sub) => sum + Number(sub.amount), 0)
+      .filter((sub: { status: string; billing_cycle: string }) => sub.status === 'ACTIVE' && sub.billing_cycle === 'MONTHLY')
+      .reduce((sum: number, sub: { amount: number }) => sum + Number(sub.amount), 0)
 
     const yearlyTotal = data
-      .filter((sub) => sub.status === 'ACTIVE' && sub.billing_cycle === 'YEARLY')
-      .reduce((sum, sub) => sum + Number(sub.amount), 0)
+      .filter((sub: { status: string; billing_cycle: string }) => sub.status === 'ACTIVE' && sub.billing_cycle === 'YEARLY')
+      .reduce((sum: number, sub: { amount: number }) => sum + Number(sub.amount), 0)
 
     return NextResponse.json({
       data,
       summary: {
         monthlyTotal,
         yearlyTotal,
-        totalActive: data.filter((sub) => sub.status === 'ACTIVE').length,
+        totalActive: data.filter((sub: { status: string }) => sub.status === 'ACTIVE').length,
       },
     })
   } catch (error) {
