@@ -60,7 +60,21 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Refresh session if expired
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const pathname = request.nextUrl.pathname
+
+  // Redirect authenticated users away from auth pages
+  if (user && (pathname === '/login' || pathname === '/register')) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Optionally, protect certain routes
+  // Uncomment this if you want to protect specific routes
+  // const protectedRoutes = ['/dashboard', '/profile', '/settings']
+  // if (!user && protectedRoutes.some(route => pathname.startsWith(route))) {
+  //   return NextResponse.redirect(new URL('/login', request.url))
+  // }
 
   return response
 }
