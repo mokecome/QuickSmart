@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     // Parse with AI
     const result: ParseExpenseResponse = await aiParser.parse(input, {
       userId: user.id,
-      learningSamples: learningSamples || [],
+      learningSamples: (learningSamples || []) as any,
     })
 
     return NextResponse.json(result)

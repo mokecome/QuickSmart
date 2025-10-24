@@ -16,7 +16,7 @@ export type ExpenseCategory =
 
 export type ExpenseSource = 'MANUAL' | 'SUBSCRIPTION' | 'TELEGRAM'
 
-export type SyncStatus = 'SYNCED' | 'PENDING' | 'CONFLICT'
+export type SyncStatus = 'SYNCED' | 'PENDING' | 'CONFLICT' | 'FAILED'
 
 export type BillingCycle = 'MONTHLY' | 'YEARLY'
 
@@ -28,6 +28,8 @@ export type NotificationType =
   | 'WEEKLY_REPORT'
   | 'MONTHLY_INSIGHTS'
   | 'ANOMALY_ALERT'
+  | 'ANOMALY_DETECTED'
+  | 'BUDGET_ALERT'
 
 export type NotificationChannel = 'EMAIL' | 'PUSH' | 'TELEGRAM'
 

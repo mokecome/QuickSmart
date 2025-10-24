@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     const monthlyData: Record<string, { total: number; count: number }> = {}
     const categoryData: Record<string, number> = {}
 
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { date: string; amount: number; category: string }) => {
       const date = new Date(expense.date)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       const amount = parseFloat(expense.amount.toString())

@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       { amounts: number[]; mean: number; stdDev: number }
     > = {}
 
-    baselineExpenses.forEach((expense) => {
+    baselineExpenses.forEach((expense: { category: string; amount: number }) => {
       const category = expense.category
       const amount = parseFloat(expense.amount.toString())
 
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
 
     // Detect anomalies
     const anomalies = recentExpenses
-      .map((expense) => {
+      .map((expense: { id: string; category: string; amount: number; description: string | null; date: string }) => {
         const category = expense.category
         const amount = parseFloat(expense.amount.toString())
 
@@ -135,11 +135,11 @@ export async function GET(request: NextRequest) {
 
         return null
       })
-      .filter((a) => a !== null)
+      .filter((a: any) => a !== null)
 
     // Calculate daily totals for overall spending anomalies
     const dailyTotals: Record<string, number> = {}
-    recentExpenses.forEach((expense) => {
+    recentExpenses.forEach((expense: { date: string; amount: number }) => {
       const date = expense.date.split('T')[0]
       const amount = parseFloat(expense.amount.toString())
       dailyTotals[date] = (dailyTotals[date] || 0) + amount

@@ -43,16 +43,16 @@ export async function GET(request: NextRequest) {
 
     // Calculate statistics
     const totalExpenses = expenses
-      .filter((e) => e.category !== 'INCOME')
-      .reduce((sum, e) => sum + Number(e.amount), 0)
+      .filter((e: { category: string }) => e.category !== 'INCOME')
+      .reduce((sum: number, e: { amount: number }) => sum + Number(e.amount), 0)
 
     const totalIncome = expenses
-      .filter((e) => e.category === 'INCOME')
-      .reduce((sum, e) => sum + Number(e.amount), 0)
+      .filter((e: { category: string }) => e.category === 'INCOME')
+      .reduce((sum: number, e: { amount: number }) => sum + Number(e.amount), 0)
 
     // Category breakdown with counts
     const categoryStats: Record<string, { amount: number; count: number }> = {}
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { category: string; amount: number }) => {
       if (expense.category !== 'INCOME') {
         if (!categoryStats[expense.category]) {
           categoryStats[expense.category] = { amount: 0, count: 0 }
@@ -72,8 +72,10 @@ export async function GET(request: NextRequest) {
       }))
       .sort((a, b) => b.amount - a.amount)
 
-    const transactionCount = expenses.filter((e) => e.category !== 'INCOME').length
+    const transactionCount = expenses.filter((e: { category: string }) => e.category !== 'INCOME').length
     const netAmount = totalIncome - totalExpenses
+    const averageTransaction =
+      transactionCount > 0 ? totalExpenses / transactionCount : 0
 
     // Daily totals (for charts)
     const dailyTotals: Record<string, number> = {}
