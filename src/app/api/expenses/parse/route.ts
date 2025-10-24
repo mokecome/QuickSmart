@@ -9,6 +9,8 @@ import { createClient } from '@/lib/supabase/server'
 import { aiParser } from '@/lib/ai/parser'
 import type { ParseExpenseRequest, ParseExpenseResponse } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     // Get authenticated user
