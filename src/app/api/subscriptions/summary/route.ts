@@ -39,14 +39,14 @@ export async function GET(request: NextRequest) {
 
     // Calculate summary statistics
     const activeSubscriptions = subscriptions.filter(
-      (sub) => sub.status === 'ACTIVE'
+      (sub: { status: string }) => sub.status === 'ACTIVE'
     )
     const pausedSubscriptions = subscriptions.filter(
-      (sub) => sub.status === 'PAUSED'
+      (sub: { status: string }) => sub.status === 'PAUSED'
     )
 
     // Calculate total monthly cost
-    const monthlyTotal = activeSubscriptions.reduce((total, sub) => {
+    const monthlyTotal = activeSubscriptions.reduce((total: number, sub: { amount: number; billing_cycle: string }) => {
       const amount = parseFloat(sub.amount.toString())
       switch (sub.billing_cycle) {
         case 'MONTHLY':
@@ -71,11 +71,11 @@ export async function GET(request: NextRequest) {
     thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30)
 
     const upcomingBillings = activeSubscriptions
-      .filter((sub) => {
+      .filter((sub: { next_billing_date: string }) => {
         const billingDate = new Date(sub.next_billing_date)
         return billingDate >= today && billingDate <= thirtyDaysLater
       })
-      .map((sub) => ({
+      .map((sub: { id: string; name: string; amount: number; next_billing_date: string }) => ({
         id: sub.id,
         name: sub.name,
         amount: sub.amount,

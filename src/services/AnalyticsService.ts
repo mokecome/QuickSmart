@@ -62,7 +62,7 @@ export class AnalyticsService {
       topExpenses: [] as Array<{ date: string; amount: number; category: string }>,
     }
 
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { amount: number; category: string; date: string }) => {
       const amount = parseFloat(expense.amount.toString())
       const category = expense.category
       const date = expense.date.split('T')[0]
@@ -135,7 +135,7 @@ export class AnalyticsService {
     // Group by month
     const monthlyData: Record<string, { total: number; count: number }> = {}
 
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { date: string; amount: number }) => {
       const date = new Date(expense.date)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       const amount = parseFloat(expense.amount.toString())
@@ -226,7 +226,7 @@ export class AnalyticsService {
       { amounts: number[]; mean: number; stdDev: number }
     > = {}
 
-    baselineExpenses.forEach((expense) => {
+    baselineExpenses.forEach((expense: { category: string; amount: number }) => {
       const category = expense.category
       const amount = parseFloat(expense.amount.toString())
 
@@ -250,7 +250,7 @@ export class AnalyticsService {
 
     // Detect anomalies
     const anomalies = recentExpenses
-      .map((expense) => {
+      .map((expense: { id: string; category: string; amount: number; description: string | null; date: string }) => {
         const category = expense.category
         const amount = parseFloat(expense.amount.toString())
 
@@ -277,7 +277,7 @@ export class AnalyticsService {
 
         return null
       })
-      .filter((a) => a !== null)
+      .filter((a: any) => a !== null)
 
     return {
       anomalies,
@@ -315,7 +315,7 @@ export class AnalyticsService {
       { total: number; count: number; average: number }
     > = {}
 
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { category: string; amount: number }) => {
       const category = expense.category
       const amount = parseFloat(expense.amount.toString())
 

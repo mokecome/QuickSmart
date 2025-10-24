@@ -22,7 +22,7 @@ interface Expense {
   date: string
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -173,10 +173,10 @@ serve(async (req) => {
         status: 200,
       }
     )
-  } catch (error) {
+  } catch (error: unknown) {
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

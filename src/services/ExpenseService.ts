@@ -252,7 +252,7 @@ export class ExpenseService {
       transactionCount: expenses.length,
     }
 
-    expenses.forEach((expense) => {
+    expenses.forEach((expense: { amount: number; category: string }) => {
       const amount = parseFloat(expense.amount.toString())
 
       if (expense.category === 'INCOME') {
