@@ -6,8 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { startOfMonth, endOfMonth, format } from 'date-fns'
-import type { MonthlyStatsResponse } from '@/types'
+import { startOfMonth, endOfMonth } from 'date-fns'
 
 export async function GET(request: NextRequest) {
   try {
@@ -51,36 +50,45 @@ export async function GET(request: NextRequest) {
       .filter((e) => e.category === 'INCOME')
       .reduce((sum, e) => sum + Number(e.amount), 0)
 
-    // Category breakdown
-    const categoryBreakdown: Record<string, number> = {}
+    // Category breakdown with counts
+    const categoryStats: Record<string, { amount: number; count: number }> = {}
     expenses.forEach((expense) => {
       if (expense.category !== 'INCOME') {
-        categoryBreakdown[expense.category] =
-          (categoryBreakdown[expense.category] || 0) + Number(expense.amount)
+        if (!categoryStats[expense.category]) {
+          categoryStats[expense.category] = { amount: 0, count: 0 }
+        }
+        categoryStats[expense.category].amount += Number(expense.amount)
+        categoryStats[expense.category].count += 1
       }
     })
 
-    // Top categories
-    const topCategories = Object.entries(categoryBreakdown)
-      .map(([category, amount]) => ({
-        category: category as any,
-        amount,
-        percentage: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
+    // Convert to array format with percentage
+    const categoryBreakdown = Object.entries(categoryStats)
+      .map(([category, stats]) => ({
+        category,
+        amount: stats.amount,
+        count: stats.count,
+        percentage: totalExpenses > 0 ? (stats.amount / totalExpenses) * 100 : 0,
       }))
       .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5)
 
     const transactionCount = expenses.filter((e) => e.category !== 'INCOME').length
-    const averageTransaction =
-      transactionCount > 0 ? totalExpenses / transactionCount : 0
+    const netAmount = totalIncome - totalExpenses
 
-    const response: MonthlyStatsResponse = {
-      totalExpenses,
-      totalIncome,
-      categoryBreakdown: categoryBreakdown as any,
-      transactionCount,
-      averageTransaction,
-      topCategories,
+    // Daily totals (for charts)
+    const dailyTotals: Record<string, number> = {}
+    expenses.forEach((expense) => {
+      const dateKey = new Date(expense.date).toISOString().split('T')[0]
+      dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + Number(expense.amount)
+    })
+
+    const response = {
+      total_expenses: totalExpenses,
+      total_income: totalIncome,
+      net_amount: netAmount,
+      transaction_count: transactionCount,
+      category_breakdown: categoryBreakdown,
+      daily_totals: dailyTotals,
     }
 
     return NextResponse.json(response)

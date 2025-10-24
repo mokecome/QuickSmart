@@ -10,6 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        border: 'hsl(var(--border))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        muted: 'hsl(var(--muted))',
         primary: {
           DEFAULT: '#4A90E2',
           50: '#EBF4FC',
@@ -22,6 +26,7 @@ const config: Config = {
           700: '#235896',
           800: '#183B65',
           900: '#0D1E34',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         success: {
           DEFAULT: '#50C878',
@@ -50,6 +55,9 @@ const config: Config = {
           800: '#1F2937',
           900: '#111827',
         },
+      },
+      borderColor: {
+        DEFAULT: 'hsl(var(--border))',
       },
       fontFamily: {
         sans: [

@@ -1,0 +1,17 @@
+{
+  "name": "QuickSmart 智能記帳",
+  "short_name": "QuickSmart",
+  "description": "AI-powered intelligent expense tracking and subscription management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4A90E2",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

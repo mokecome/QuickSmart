@@ -22,8 +22,11 @@ export async function GET(request: NextRequest) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const pageSizeParam =
+      searchParams.get('pageSize') ?? searchParams.get('limit') ?? '20'
+    const parsedLimit = Number.parseInt(pageSizeParam, 10)
+    const limit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 20
     const category = searchParams.get('category')
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
@@ -59,13 +62,10 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      data,
-      pagination: {
-        total: count || 0,
-        page,
-        limit,
-        totalPages: Math.ceil((count || 0) / limit),
-      },
+      expenses: data || [],
+      total: count || 0,
+      page,
+      pageSize: limit,
     })
   } catch (error) {
     console.error('List expenses error:', error)

@@ -1,8 +1,8 @@
 # QuickSmart 智能記帳 - 後端架構設計文檔
 
-**版本**: v2.0 (Supabase Edition)
+**版本**: v2.1 (OpenAI Edition)
 **最後更新**: 2025-10-24
-**技術棧**: Node.js + TypeScript + Supabase + Claude AI
+**技術棧**: Node.js + TypeScript + Supabase + OpenAI GPT
 **架構模式**: Clean Architecture + DDD (Domain-Driven Design)
 
 ---
@@ -50,13 +50,13 @@
 
 - ✅ RESTful API 設計
 - ✅ Supabase Auth 身份認證 (Google OAuth + Email)
-- ✅ AI 自然語言解析 (Claude 3.5 Sonnet)
+- ✅ AI 自然語言解析 (OpenAI GPT-4o-mini)
 - ✅ 智能降級機制 (規則引擎備援)
-- ✅ 多設備同步 (樂觀鎖 + 版本控制)
+- ⚠️ 多設備同步 (數據庫支持，API 未實現)
 - ✅ 定時任務調度 (訂閱提醒 + 自動記帳)
-- ✅ 實時通知推送 (Push + Email + Telegram)
+- ⚠️ 實時通知推送 (基礎框架已建立)
 - ✅ 數據緩存優化 (Supabase 緩存策略)
-- ✅ 事件驅動架構 (基於 Event Storming)
+- ⚠️ 事件驅動架構 (簡化實現)
 
 ---
 
@@ -87,7 +87,7 @@
 
 | 服務 | 用途 | 降級方案 |
 |------|------|----------|
-| **Claude AI** (Anthropic) | 自然語言解析 | 本地規則引擎 |
+| **OpenAI GPT-4o-mini** | 自然語言解析 | 本地規則引擎 |
 | **Resend** | 郵件發送 | Supabase Auth Email 備用 |
 | **Telegram Bot API** | Telegram 整合 | 可選功能 |
 | **Firebase Cloud Messaging** | 推播通知 | Email 備援 |
@@ -129,8 +129,8 @@
         │           │
         ▼           ▼
 ┌───────────┐  ┌──────────┐
-│  Claude   │  │ Supabase │
-│    AI     │  │  Cache   │
+│  OpenAI   │  │ Supabase │
+│    GPT    │  │  Cache   │
 └───────────┘  └──────────┘
         │
         ▼
@@ -175,7 +175,7 @@
 ```
 用戶輸入 → API Gateway → Supabase Auth 驗證 → ExpenseParserService
                                                       ↓
-                                                Claude AI 解析
+                                                OpenAI GPT 解析
                                                       ↓
                                                 ┌─────┴─────┐
                                                 │  成功?    │
@@ -403,7 +403,7 @@ quicksmart-backend/
 │   │   │       └── SupabaseAILearningSampleRepository.ts
 │   │   │
 │   │   ├── ai/
-│   │   │   ├── ClaudeClient.ts               # Claude AI 客戶端
+│   │   │   ├── OpenAIClient.ts               # OpenAI GPT 客戶端
 │   │   │   ├── prompts/
 │   │   │   │   ├── expenseParserPrompt.ts    # 解析提示詞
 │   │   │   │   └── insightGeneratorPrompt.ts # 洞察提示詞
@@ -1543,11 +1543,11 @@ Content-Type: application/json
 ```typescript
 // src/application/services/AIParserService.ts
 import { createClient } from '@supabase/supabase-js';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 
 export class AIParserService {
   private supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  private claudeClient = new Anthropic({ apiKey: CLAUDE_API_KEY });
+  private openaiClient = new OpenAI({ apiKey: OPENAI_API_KEY });
 
   async parse(input: string, userId: string): Promise<ParsedExpense> {
     // 1. 輸入驗證
@@ -1556,9 +1556,9 @@ export class AIParserService {
     // 2. 獲取用戶學習樣本 (US-003)
     const learningSamples = await this.getLearningSamples(userId);
 
-    // 3. 調用 Claude AI (US-001)
+    // 3. 調用 OpenAI GPT (US-001)
     try {
-      const result = await this.parseWithClaude(input, learningSamples);
+      const result = await this.parseWithGPT(input, learningSamples);
 
       // 4. 驗證結果
       this.validateResult(result);
@@ -1604,16 +1604,20 @@ export class AIParserService {
     }
   }
 
-  private async parseWithClaude(input: string, context: AILearningSample[]): Promise<any> {
+  private async parseWithGPT(input: string, context: AILearningSample[]): Promise<any> {
     const prompt = this.buildPrompt(input, context);
 
-    const response = await this.claudeClient.messages.create({
-      model: 'claude-3-5-sonnet-20250219',
-      max_tokens: 1024,
+    const response = await this.openaiClient.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 500,
       temperature: 0.3,
+      response_format: { type: 'json_object' },
       messages: [{
+        role: 'system',
+        content: this.buildSystemPrompt(context)
+      }, {
         role: 'user',
-        content: prompt
+        content: input
       }]
     });
 
@@ -1777,20 +1781,20 @@ export async function detectConflicts(
 
 ## 8. AI 整合方案
 
-### 8.1 Claude AI 配置
+### 8.1 OpenAI GPT 配置
 
 ```typescript
-// src/infrastructure/ai/ClaudeClient.ts
-import Anthropic from '@anthropic-ai/sdk';
+// src/lib/ai/parser.ts
+import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js';
 
-export class ClaudeClient {
-  private client: Anthropic;
+export class AIParserService {
+  private client: OpenAI;
   private supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   constructor() {
-    this.client = new Anthropic({
-      apiKey: process.env.CLAUDE_API_KEY,
+    this.client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
   }
 
@@ -1798,20 +1802,24 @@ export class ClaudeClient {
     // 獲取用戶學習樣本 (US-003)
     const { data: learningSamples } = await this.supabase
       .from('ai_learning_samples')
-      .select('input_text, correct_category')
+      .select('original_input, corrected_category')
       .eq('user_id', userId)
-      .eq('learned', false)
+      .order('created_at', { ascending: false })
       .limit(10);
 
-    const prompt = this.buildPrompt(input, learningSamples || []);
+    const learningContext = this.buildLearningContext(learningSamples || []);
 
-    const response = await this.client.messages.create({
-      model: 'claude-3-5-sonnet-20250219',
-      max_tokens: 1024,
+    const response = await this.client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 500,
       temperature: 0.3,
+      response_format: { type: 'json_object' },
       messages: [{
+        role: 'system',
+        content: this.buildSystemPrompt(learningContext)
+      }, {
         role: 'user',
-        content: prompt
+        content: input
       }]
     });
 
@@ -2044,8 +2052,8 @@ NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
 SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
 
-# Claude AI
-CLAUDE_API_KEY="sk-ant-api03-..."
+# OpenAI
+OPENAI_API_KEY="sk-..."
 
 # Resend (Email)
 RESEND_API_KEY="re_..."
@@ -2102,7 +2110,7 @@ supabase gen types typescript --local > src/shared/types/supabase.types.ts
     "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
     "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
-    "CLAUDE_API_KEY": "@claude-api-key"
+    "OPENAI_API_KEY": "@openai-api-key"
   }
 }
 ```
@@ -2114,7 +2122,7 @@ supabase gen types typescript --local > src/shared/types/supabase.types.ts
 supabase functions deploy subscription-billing-check
 
 # 設置環境變量
-supabase secrets set CLAUDE_API_KEY=sk-ant-api03-...
+supabase secrets set OPENAI_API_KEY=sk-...
 
 # 調用 Edge Function (測試)
 supabase functions invoke subscription-billing-check

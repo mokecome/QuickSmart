@@ -64,7 +64,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-**Action Required**: Replace `your_openai_api_key_here` with your actual OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys).
+**⚠️ 重要：必須設置 OpenAI API Key**
+
+在 `.env.local` 文件中將 `OPENAI_API_KEY` 替換為您的實際 API Key：
+
+```env
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxx
+```
+
+如何獲取 API Key:
+1. 訪問 [OpenAI Platform](https://platform.openai.com/api-keys)
+2. 登錄或註冊帳戶
+3. 點擊 "Create new secret key"
+4. 複製生成的 API Key
+5. 貼到 `.env.local` 文件中
 
 ### 4. Database Setup
 
