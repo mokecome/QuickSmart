@@ -239,7 +239,7 @@ export class SubscriptionService {
     // Update next billing date
     const nextBillingDate = this.calculateNextBillingDate(
       new Date(subscription.next_billing_date),
-      subscription.billing_cycle
+      subscription.billing_cycle as 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
     )
 
     const { error: updateError } = await this.supabase

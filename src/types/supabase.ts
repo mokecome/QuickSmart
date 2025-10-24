@@ -55,6 +55,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       expenses: {
         Row: {
@@ -105,6 +106,7 @@ export interface Database {
           updated_at?: string
           deleted_at?: string | null
         }
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -161,6 +163,7 @@ export interface Database {
           updated_at?: string
           deleted_at?: string | null
         }
+        Relationships: []
       }
       ai_learning_samples: {
         Row: {
@@ -202,6 +205,7 @@ export interface Database {
           expense_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -252,6 +256,7 @@ export interface Database {
           read?: boolean
           read_at?: string | null
         }
+        Relationships: []
       }
       analytics_cache: {
         Row: {
@@ -281,6 +286,7 @@ export interface Database {
           expires_at?: string
           created_at?: string
         }
+        Relationships: []
       }
     }
     Views: {

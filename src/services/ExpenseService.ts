@@ -36,7 +36,7 @@ export class ExpenseService {
 
     return this.aiParser.parse(input, {
       userId,
-      learningSamples: learningSamples || [],
+      learningSamples: (learningSamples || []) as any,
     })
   }
 
